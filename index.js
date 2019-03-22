@@ -4,22 +4,36 @@ const bodyParser = require('body-parser');
 const express = require('express')
 const app = express()
 const PORT = 3100;
+const mongoose = require('mongoose');
 
+mongoose.connect('mongodb://localhost/test');
+var db = mongoose.connection;
+var contentSchema = new mongoose.Schema({  }, { strict: false });
 app.use(bodyParser.json({ strict: false }));
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))
 
 
-app.post('/structure-content', function (req, res) {
+app.post('/contents', function (req, res) {
     let jason = {};
-    request.get('http://localhost:8080/metadata/getMetadata?id=' + req.body.metadata_id, (err, response, body) => {
+    request.get('http://localhost:8080/metadata/getMetadata?id=' + req.body.metadata_id, async (err, response, body) => {
         let metadata = JSON.parse(response.body);
         metadata = metadata[0].attributes;
         metadata.forEach(attribute => {
             jason[attribute.machine_name] = generateType(attribute.type);
         })
         jason = JSON.parse(JSON.stringify(jason));
-        res.send(validateClass(jason, req.body));
+        if (validateClass(req.body.data, jason)) {
+
+            var result = req.body;
+            
+            var Content = mongoose.model('Content', contentSchema);
+            var content = new Content(result);
+            var api_response = await content.save();
+            res.send(api_response);
+        } else {
+            res.send("Invalid data");
+        }
     })
 })
 
@@ -27,10 +41,11 @@ app.post('/structure-content', function (req, res) {
 function validateClass(objectToValidate, parameter) {
     let r = true;
     for (var key in objectToValidate) {
+        // console.log("type of 1 " + key + ": " + typeof objectToValidate[key]);
+        // console.log("type of 2 " + key + ": " + typeof parameter[key]);
         if (!(typeof objectToValidate[key] == typeof parameter[key])) {
             console.log("False in: " + key);
-            console.log("typeof 1 " + key + ": " + typeof objectToValidate[key]);
-            console.log("typeof 2 " + key + ": " + typeof parameter[key]);
+
             r = false;
         }
     }
