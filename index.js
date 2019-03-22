@@ -14,7 +14,7 @@ app.use(bodyParser.json({ strict: false }));
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))
 
 
-app.post('/contents', function (req, res) {
+app.post('/contents/addContent', function (req, res) {
     let jason = {};
     request.get('http://localhost:8080/metadata/getMetadata?id=' + req.body.metadata_id, async (err, response, body) => {
         let metadata = JSON.parse(response.body);
@@ -35,6 +35,16 @@ app.post('/contents', function (req, res) {
         }
     })
 })
+
+app.get('/content/getContent', async (request, response) => {
+    try {
+        var Content = mongoose.model('Content', contentSchema);
+        var result = await Content.find().exec();
+        response.send(result);
+    } catch (error) {
+        response.status(500).send(error);
+    }
+});
 
 
 function validateClass(objectToValidate, parameter) {
