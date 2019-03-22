@@ -13,5 +13,8 @@
     "mongoose": "^5.4.19",
     "request": "^2.88.0",
     "serverless-http": "^1.9.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
   }
 }
