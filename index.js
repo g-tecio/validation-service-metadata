@@ -6,7 +6,7 @@ const app = express()
 const PORT = 3100;
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb+srv://marcolobezno:1234@clusterlobezno-vjzh4.mongodb.net/test?retryWrites=true');
 var db = mongoose.connection;
 var contentSchema = new mongoose.Schema({  }, { strict: false });
 app.use(bodyParser.json({ strict: false }));
@@ -26,7 +26,6 @@ app.post('/contents', function (req, res) {
         if (validateClass(req.body.data, jason)) {
 
             var result = req.body;
-            
             var Content = mongoose.model('Content', contentSchema);
             var content = new Content(result);
             var api_response = await content.save();
