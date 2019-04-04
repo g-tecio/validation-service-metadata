@@ -9,12 +9,14 @@
   "author": "Camus",
   "license": "ISC",
   "dependencies": {
+    "aws-serverless-express": "^3.3.6",
     "express": "^4.16.4",
     "mongoose": "^5.4.19",
     "request": "^2.88.0",
     "serverless-http": "^1.9.1"
   },
   "devDependencies": {
+    "claudia": "^5.4.2",
     "nodemon": "^1.18.10"
   }
 }

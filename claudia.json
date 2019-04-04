@@ -1,0 +1,10 @@
+{
+  "lambda": {
+    "role": "validation-service-executor",
+    "name": "validation-service",
+    "region": "us-east-1"
+  },
+  "api": {
+    "id": "bflwg4krb9"
+  }
+}

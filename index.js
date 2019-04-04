@@ -11,8 +11,11 @@ var db = mongoose.connection;
 var contentSchema = new mongoose.Schema({  }, { strict: false });
 app.use(bodyParser.json({ strict: false }));
 
-app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))
+//The app doesn't need to listen TCP anymore
+//app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`)) 
 
+
+module.exports = app; //Export the application from the module so it can be use Lambda
 
 app.post('/contents/addContent', function (req, res) {
     let jason = {};
