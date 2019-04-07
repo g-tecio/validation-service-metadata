@@ -17,9 +17,9 @@ app.use(bodyParser.json({ strict: false }));
 
 module.exports = app; //Export the application from the module so it can be use Lambda
 
-app.post('/contents/addContent', function (req, res) {
+app.post('/content/addContent', function (req, res) {
     let jason = {};
-    request.get('http://localhost:8080/metadata/getMetadata?id=' + req.body.metadata_id, async (err, response, body) => {
+    request.get('https://0795jhayp2.execute-api.us-east-1.amazonaws.com/Stage/metadata/getMetadata?id=' + req.body.metadata_id, async (err, response, body) => {
         let metadata = JSON.parse(response.body);
         metadata = metadata[0].attributes;
         metadata.forEach(attribute => {
@@ -47,6 +47,18 @@ app.get('/content/getContent', async (request, response) => {
     } catch (error) {
         response.status(500).send(error);
     }
+});
+
+//Get by id endpoint
+app.get('/content/getContentById/:_id', async (req, res) => {
+    try{
+       var Content = mongoose.model('Content', contentSchema);
+       var result = await Content.findById(req.params._id).exec();
+       res.send(result);
+    } catch (error){
+        res.status(500).send(error);
+    } 
+  
 });
 
 
