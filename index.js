@@ -19,7 +19,7 @@ module.exports = app; //Export the application from the module so it can be use 
 
 app.post('/content/addContent', function (req, res) {
     let jason = {};
-    request.get('https://0795jhayp2.execute-api.us-east-1.amazonaws.com/Stage/metadata/getMetadata?id=' + req.body.metadata_id, async (err, response, body) => {
+    request.get('https://0795jhayp2.execute-api.us-east-1.amazonaws.com/Stage/metadata?id=' + req.body.metadata_id, async (err, response, body) => {
         let metadata = JSON.parse(response.body);
         metadata = metadata[0].attributes;
         metadata.forEach(attribute => {
@@ -39,7 +39,7 @@ app.post('/content/addContent', function (req, res) {
     })
 })
 
-app.get('/content/getContent', async (request, response) => {
+app.get('/content', async (request, response) => {
     try {
         var Content = mongoose.model('Content', contentSchema);
         var result = await Content.find().exec();
@@ -50,7 +50,7 @@ app.get('/content/getContent', async (request, response) => {
 });
 
 //Get by id endpoint
-app.get('/content/getContentById/:_id', async (req, res) => {
+app.get('/content/:_id', async (req, res) => {
     try{
        var Content = mongoose.model('Content', contentSchema);
        var result = await Content.findById(req.params._id).exec();
