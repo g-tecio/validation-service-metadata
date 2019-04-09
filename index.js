@@ -61,6 +61,44 @@ app.get('/content/:_id', async (req, res) => {
   
 });
 
+//Update endpint
+app.put('/content/updateContent/:_id', async (req, res) =>{
+  
+    let jason = {};
+    request.get('https://0795jhayp2.execute-api.us-east-1.amazonaws.com/Stage/metadata?id=' + req.body.metadata_id, async (err, response, body) => {
+        let metadata = JSON.parse(response.body);
+        metadata = metadata[0].attributes;
+        metadata.forEach(attribute => {
+            jason[attribute.machine_name] = generateType(attribute.type);
+        })
+        jason = JSON.parse(JSON.stringify(jason));
+        if (validateClass(req.body.data, jason)) {
+            var Content = mongoose.model('Content', contentSchema);
+            var update = await Content.findOneAndUpdate(req.params._id, {$set: req.body}).exec();
+            var result = await Content.findById(req.params._id).exec();
+            res.send(result);
+            
+        } else {
+            res.send("Invalid data");
+        }
+    })
+
+});
+
+//Delete endpoint
+app.delete('/content/deleteContent/:_id', async (req, res) =>{
+    try{
+        var Content = mongoose.model('Content', contentSchema);
+        var deleteC = await Content.findByIdAndRemove(req.params._id).exec();
+        var result = await Content.find().exec();
+        res.send(result);
+
+    }catch (error){
+        res.status(500).send(error);
+    }
+
+});
+
 
 function validateClass(objectToValidate, parameter) {
     let r = true;
