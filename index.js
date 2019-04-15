@@ -12,10 +12,10 @@ var contentSchema = new mongoose.Schema({  }, { strict: false });
 app.use(bodyParser.json({ strict: false }));
 
 //The app doesn't need to listen TCP anymore
-//app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`)) 
+app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`)) 
 
 
-module.exports = app; //Export the application from the module so it can be use Lambda
+//module.exports = app; //Export the application from the module so it can be use Lambda
 
 app.post('/content/addContent', function (req, res) {
     let jason = {};
@@ -27,8 +27,15 @@ app.post('/content/addContent', function (req, res) {
         })
         jason = JSON.parse(JSON.stringify(jason));
         if (validateClass(req.body.data, jason)) {
-
-            var result = req.body;
+            var result = {
+                created_at: new Date(),
+                modified_at: new Date(),
+                title: req.body.title,
+                metadata_id: req.body.metadata_id,
+                data: req.body.data,
+                content: req.body.content,
+                status: "unpublished"
+            }
             var Content = mongoose.model('Content', contentSchema);
             var content = new Content(result);
             var api_response = await content.save();
@@ -73,8 +80,15 @@ app.put('/content/updateContent/:_id', async (req, res) =>{
         })
         jason = JSON.parse(JSON.stringify(jason));
         if (validateClass(req.body.data, jason)) {
+            var result = {
+                modified_at: new Date(),
+                title: req.body.title,
+                data: req.body.data,
+                content: req.body.content,
+                status: "unpublished"
+            }
             var Content = mongoose.model('Content', contentSchema);
-            var update = await Content.findOneAndUpdate(req.params._id, {$set: req.body}).exec();
+            var update = await Content.findOneAndUpdate(req.params._id, {$set: result}).exec();
             var result = await Content.findById(req.params._id).exec();
             res.send(result);
             
