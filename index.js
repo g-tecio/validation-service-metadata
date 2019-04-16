@@ -113,6 +113,18 @@ app.delete('/content/deleteContent/:_id', async (req, res) =>{
 
 });
 
+//Find by metadata_id endpoint
+
+app.get('/content/metadata/:metadata_id', async (req, res) => {
+    try{
+       var Content = mongoose.model('Content', contentSchema);
+       var result = await Content.find({metadata_id: req.params.metadata_id}).exec();
+       res.send(result);
+    } catch (error){
+        res.status(500).send(error);
+    } 
+  
+});
 
 function validateClass(objectToValidate, parameter) {
     let r = true;
